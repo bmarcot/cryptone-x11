@@ -1,0 +1,8 @@
+{
+  "name": "cryptone-x11",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Benoit Marcot <benoit.marcot@gmail.com>",
+  "license": "MIT",
+  "private": true
+}
