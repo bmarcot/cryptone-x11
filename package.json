@@ -4,5 +4,8 @@
   "main": "index.js",
   "author": "Benoit Marcot <benoit.marcot@gmail.com>",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "hardhat": "^2.8.0"
+  }
 }
