@@ -1,0 +1,18 @@
+{
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "options": {
+        "tabWidth": 4,
+        "singleQuote": true
+      }
+    },
+    {
+      "files": ["*.sol"],
+      "options": {
+        "tabWidth": 4,
+        "singleQuote": false
+      }
+    }
+  ]
+}
