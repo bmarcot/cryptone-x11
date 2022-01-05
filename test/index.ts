@@ -1,5 +1,5 @@
 import { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers';
-import { expect } from 'chai';
+import { assert, expect } from 'chai';
 import { ContractTransaction } from 'ethers';
 import { ethers } from 'hardhat';
 import { CryptoneX11, CryptoneX11__factory } from '../typechain';
@@ -48,11 +48,16 @@ describe('CryptoneX11', function () {
         });
 
         it('Is ownable', async () => {
-            await cryptone.mint(owner.address, {
-                value: UNIT_PRICE,
-            });
+            const tokenId = await cryptone
+                .mint(owner.address, {
+                    value: UNIT_PRICE,
+                })
+                .then(async (tx) => {
+                    const receipt = await tx.wait();
+                    return receipt.events![0].args![2];
+                });
 
-            expect(await cryptone.balanceOf(owner.address)).to.equal(1);
+            expect(await cryptone.ownerOf(tokenId)).to.equal(owner.address);
         });
 
         it('Is not mintable if value of transaction is below price ', async () => {
@@ -61,36 +66,39 @@ describe('CryptoneX11', function () {
             );
         });
 
-        it('Has tokenId starting at index 1', async () => {
-            expect(
-                await cryptone.callStatic.mint(owner.address, {
+        it('Returns the correct tokenURI', async () => {
+            const tokenId = await cryptone
+                .mint(owner.address, {
                     value: UNIT_PRICE,
                 })
-            ).to.equal(1);
-        });
+                .then(async (tx) => {
+                    const receipt = await tx.wait();
+                    return receipt.events![0].args![2];
+                });
 
-        it('Returns the correct tokenURI', async () => {
-            await cryptone.mint(owner.address, {
-                value: UNIT_PRICE,
-            });
-
-            expect(await cryptone.tokenURI(1)).to.equal(`${BASE_TOKEN_URI}1`);
+            expect(await cryptone.tokenURI(tokenId)).to.equal(
+                `${BASE_TOKEN_URI}${tokenId}`
+            );
         });
 
         it('Is transferable', async () => {
-            await cryptone.mint(owner.address, {
-                value: UNIT_PRICE,
-            });
+            const tokenId = await cryptone
+                .mint(owner.address, {
+                    value: UNIT_PRICE,
+                })
+                .then(async (tx) => {
+                    const receipt = await tx.wait();
+                    return receipt.events![0].args![2];
+                });
 
             await cryptone['safeTransferFrom(address,address,uint256)'](
                 owner.address,
                 addr1.address,
-                1
+                tokenId
             );
 
             expect(await cryptone.balanceOf(owner.address)).to.equal(0);
             expect(await cryptone.balanceOf(addr1.address)).to.equal(1);
-            expect(await cryptone.ownerOf(1)).to.equal(addr1.address);
         });
     });
 
@@ -121,8 +129,10 @@ describe('CryptoneX11', function () {
             );
         });
 
-        it('Is not withdrawable by anyone', async () => {
-            await expect(cryptone.connect(addr1).withdraw()).to.be.reverted;
+        it('Is crediting the owner', async () => {
+            await expect(
+                await cryptone.connect(addr1).withdraw()
+            ).to.changeEtherBalance(owner, UNIT_PRICE);
         });
     });
 
@@ -138,9 +148,7 @@ describe('CryptoneX11', function () {
         });
 
         it('Is total', async () => {
-            ps.map(async (p) => {
-                await expect(p).to.not.be.reverted;
-            });
+            for (const p of ps) await expect(p).to.not.be.reverted;
         });
 
         it('Is limited', async () => {
@@ -151,6 +159,20 @@ describe('CryptoneX11', function () {
                     })
                 ).to.be.revertedWith('Max supply reached');
             });
+        });
+
+        it('Is unique', async () => {
+            let tokenIds: number[] = [];
+
+            await Promise.all(ps).then(async (txs) => {
+                for (const tx of txs) {
+                    const receipt = await tx.wait();
+                    // mint() emits a Transfer event, signature is (from,to,tokenId)
+                    tokenIds.push(receipt.events![0].args![2]);
+                }
+            });
+
+            assert.equal([...new Set(tokenIds)].length, MAX_SUPPLY);
         });
     });
 });
