@@ -14,7 +14,7 @@ contract CryptoneX11 is ERC721URIStorage, Ownable {
     uint256 private constant UNIT_PRICE = 0.01 ether;
     mapping(uint256 => uint256) private m;
 
-    constructor(string memory baseTokenURI) ERC721("CryptoneX11", "TON11") {
+    constructor(string memory baseTokenURI) ERC721("CryptoneX11", "CX11") {
         setBaseTokenURI(baseTokenURI);
     }
 
@@ -23,13 +23,11 @@ contract CryptoneX11 is ERC721URIStorage, Ownable {
     }
 
     function mint(address to) external payable returns (uint256) {
-        require(totalSupply() + 1 <= MAX_SUPPLY, "Max supply reached");
-        require(msg.value >= UNIT_PRICE, "Not enough ether to purchase");
-
+        require(totalSupply() + 1 <= MAX_SUPPLY, "!supply");
+        require(msg.value >= UNIT_PRICE, "!ether");
         uint256 newItemId = shuffle();
         _safeMint(to, newItemId);
         _tokenIds.increment();
-
         return newItemId;
     }
 
@@ -43,9 +41,9 @@ contract CryptoneX11 is ERC721URIStorage, Ownable {
 
     function withdraw() external {
         uint256 balance = address(this).balance;
-
+        // solhint-disable-next-line avoid-low-level-calls
         (bool success, ) = owner().call{value: balance}("");
-        require(success, "Transfer failed");
+        require(success, "!transfer");
     }
 
     function rand() private view returns (uint256) {
@@ -64,13 +62,11 @@ contract CryptoneX11 is ERC721URIStorage, Ownable {
     // Fisher-Yates shuffle, implemented with a sparse matrix
     function shuffle() private returns (uint256) {
         uint256 len = MAX_SUPPLY - totalSupply();
-
         return _shuffle(1 + (rand() % len), len);
     }
 
     function _shuffle(uint256 r, uint256 len) private returns (uint256) {
         uint256 _r;
-
         if (m[r] != 0) {
             if (r == len) return m[r];
             _r = m[r];
@@ -83,7 +79,6 @@ contract CryptoneX11 is ERC721URIStorage, Ownable {
         } else {
             m[r] = len;
         }
-
         return _r;
     }
 }

@@ -62,7 +62,7 @@ describe('CryptoneX11', function () {
 
         it('Is not mintable if value of transaction is below price ', async () => {
             await expect(cryptone.mint(owner.address)).to.be.revertedWith(
-                'Not enough ether to purchase'
+                '!ether'
             );
         });
 
@@ -157,7 +157,7 @@ describe('CryptoneX11', function () {
                     cryptone.mint(owner.address, {
                         value: UNIT_PRICE,
                     })
-                ).to.be.revertedWith('Max supply reached');
+                ).to.be.revertedWith('!supply');
             });
         });
 
