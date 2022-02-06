@@ -43,6 +43,13 @@ const config: HardhatUserConfig = {
                     ? [RINKEBY_ETH_PRIVATE_KEY]
                     : [],
         },
+        mumbai: {
+            url: ALCHEMY_API_URL || '',
+            accounts:
+                RINKEBY_ETH_PRIVATE_KEY !== undefined
+                    ? [RINKEBY_ETH_PRIVATE_KEY]
+                    : [],
+        },
     },
     gasReporter: {
         enabled: process.env.REPORT_GAS !== undefined,
