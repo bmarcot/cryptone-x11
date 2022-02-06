@@ -50,12 +50,14 @@ task('mint-free', 'Mint multiple NFTs for free').setAction(async (_, hre) => {
             if (hre.network.name === 'localhost') {
                 const [_, _recipient] = await hre.ethers.getSigners();
                 recipient = _recipient.address;
+            } else if (hre.network.name === 'polygon') {
+                recipient = env('POLYGON_ETH_PUBLIC_KEY');
             } else {
                 recipient = env('ETH_PUBLIC_KEY');
             }
 
-            return contract.ownerMint(recipient, 130, {
-                gasLimit: 1000_000,
+            return contract.ownerMint(recipient, 1, {
+                gasLimit: 500_000,
             });
         })
         .then((tr: TransactionResponse) => {

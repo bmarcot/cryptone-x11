@@ -24,8 +24,12 @@ task('accounts', 'Prints the list of accounts', async (taskArgs, hre) => {
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
 
-const { ALCHEMY_API_URL, POLYGON_ALCHEMY_API_URL, RINKEBY_ETH_PRIVATE_KEY } =
-    process.env;
+const {
+    ALCHEMY_API_URL,
+    POLYGON_ALCHEMY_API_URL,
+    RINKEBY_ETH_PRIVATE_KEY,
+    POLYGON_ETH_PRIVATE_KEY,
+} = process.env;
 
 const config: HardhatUserConfig = {
     solidity: '0.8.4',
@@ -54,8 +58,8 @@ const config: HardhatUserConfig = {
         polygon: {
             url: POLYGON_ALCHEMY_API_URL || '',
             accounts:
-                RINKEBY_ETH_PRIVATE_KEY !== undefined
-                    ? [RINKEBY_ETH_PRIVATE_KEY]
+                POLYGON_ETH_PRIVATE_KEY !== undefined
+                    ? [POLYGON_ETH_PRIVATE_KEY]
                     : [],
         },
     },

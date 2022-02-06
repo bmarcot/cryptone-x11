@@ -22,7 +22,7 @@ describe('CryptoneX11', function () {
             'CryptoneX11'
         )) as CryptoneX11__factory;
         cryptone = await cryptoneFactory
-            .deploy(BASE_TOKEN_URI)
+            .deploy()
             .then((_cryptone) => _cryptone.deployed());
     });
 
