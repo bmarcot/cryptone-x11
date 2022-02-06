@@ -6,9 +6,14 @@ import { getContract } from './lib/contract';
 
 task('deploy-contract', 'Deploy the CryptoneX11 contract').setAction(
     async (_, hre) => {
+        const BASE_TOKEN_URI =
+            'ipfs://QmWrzgPNvKqRAW96hztUwc6ZHsutkri4GwThzxvMYbNLMm/';
         return hre.ethers
             .getContractFactory('CryptoneX11')
-            .then(async (contractFactory) => await contractFactory.deploy())
+            .then(
+                async (contractFactory) =>
+                    await contractFactory.deploy(BASE_TOKEN_URI)
+            )
             .then(async (cryptone) => await cryptone.deployed())
             .then((cryptone) => {
                 //console.log(`hre network ${hre.network.name}`);
