@@ -11,6 +11,10 @@ export const getContract = (
         return getContractAt(hre, name, env('LOCALHOST_NFT_CONTRACT_ADDRESS'));
     if (hre.network.name === 'rinkeby')
         return getContractAt(hre, name, env('RINKEBY_NFT_CONTRACT_ADDRESS'));
+    if (hre.network.name === 'mumbai')
+        return getContractAt(hre, name, env('MUMBAI_NFT_CONTRACT_ADDRESS'));
+    if (hre.network.name === 'polygon')
+        return getContractAt(hre, name, env('POLYGON_NFT_CONTRACT_ADDRESS'));
 
     return getContractAt(hre, name, env('NFT_CONTRACT_ADDRESS'));
 };
