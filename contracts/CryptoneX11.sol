@@ -46,7 +46,7 @@ contract CryptoneX11 is ERC721URIStorage, Ownable, VRFConsumerBase {
 
     function ownerMint(address to, uint256 count) external onlyOwner {
         require(totalSupply() + count <= MAX_SUPPLY, "!supply");
-        for (uint256 i = 0; i < count; count++) doMint(to);
+        for (uint256 i = 0; i < count; i++) doMint(to);
     }
 
     function doMint(address to) private {
