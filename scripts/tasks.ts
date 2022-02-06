@@ -6,16 +6,9 @@ import { getContract } from './lib/contract';
 
 task('deploy-contract', 'Deploy the CryptoneX11 contract').setAction(
     async (_, hre) => {
-        const BASE_TOKEN_URI =
-            'ipfs://QmWrzgPNvKqRAW96hztUwc6ZHsutkri4GwThzxvMYbNLMm/';
-        //'https://gateway.pinata.cloud/ipfs/QmULTZGBLMUQLi4fAS7gqVWHyi1cGUs5ZC5Hb1tJPqv6ts/';
-
         return hre.ethers
             .getContractFactory('CryptoneX11')
-            .then(
-                async (contractFactory) =>
-                    await contractFactory.deploy(BASE_TOKEN_URI)
-            )
+            .then(async (contractFactory) => await contractFactory.deploy())
             .then(async (cryptone) => await cryptone.deployed())
             .then((cryptone) => {
                 //console.log(`hre network ${hre.network.name}`);
@@ -42,6 +35,27 @@ task('mint-nft', 'Mint a NFT').setAction(async (_, hre) => {
             return contract.mint(recipient, {
                 value: NFT_UNIT_PRICE,
                 gasLimit: 500_000,
+            });
+        })
+        .then((tr: TransactionResponse) => {
+            process.stdout.write(`TX hash: ${tr.hash}\n`);
+        });
+});
+
+task('mint-free', 'Mint multiple NFTs for free').setAction(async (_, hre) => {
+    return getContract('CryptoneX11', hre)
+        .then(async (contract: Contract) => {
+            let recipient: string;
+
+            if (hre.network.name === 'localhost') {
+                const [_, _recipient] = await hre.ethers.getSigners();
+                recipient = _recipient.address;
+            } else {
+                recipient = env('ETH_PUBLIC_KEY');
+            }
+
+            return contract.ownerMint(recipient, 130, {
+                gasLimit: 1000_000,
             });
         })
         .then((tr: TransactionResponse) => {
