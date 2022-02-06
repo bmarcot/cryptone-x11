@@ -10,7 +10,6 @@ contract CryptoneX11 is ERC721URIStorage, Ownable, VRFConsumerBase {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
-    string private _baseTokenURI;
     uint256 private constant MAX_SUPPLY = 145;
     uint256 private constant UNIT_PRICE = 0.01 ether;
     mapping(uint256 => uint256) private m;
@@ -21,14 +20,13 @@ contract CryptoneX11 is ERC721URIStorage, Ownable, VRFConsumerBase {
     bytes32 internal keyHash;
     uint256 internal fee;
 
-    constructor(string memory baseTokenURI)
+    constructor()
         ERC721("CryptoneX11", "CX11")
         VRFConsumerBase(
             0x8C7382F9D8f56b33781fE506E897a4F1e2d17255,
             0x326C977E6efc84E512bB9C30f76E30c160eD06FB
         )
     {
-        setBaseTokenURI(baseTokenURI);
         keyHash = 0x6e75b569a01ef56d18cab6a8e71e6600d6ce853834d4a5748b720d06f878b3a4;
         fee = 0.0001 * 10**18;
     }
@@ -66,12 +64,8 @@ contract CryptoneX11 is ERC721URIStorage, Ownable, VRFConsumerBase {
         isMinting[msg.sender] = false;
     }
 
-    function _baseURI() internal view override returns (string memory) {
-        return _baseTokenURI;
-    }
-
-    function setBaseTokenURI(string memory baseTokenURI) public onlyOwner {
-        _baseTokenURI = baseTokenURI;
+    function _baseURI() internal pure override returns (string memory) {
+        return "ipfs://QmWrzgPNvKqRAW96hztUwc6ZHsutkri4GwThzxvMYbNLMm/";
     }
 
     // Fisher-Yates shuffle, implemented with a sparse matrix
