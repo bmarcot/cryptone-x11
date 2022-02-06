@@ -11,7 +11,7 @@ contract CryptoneX11 is ERC721URIStorage, Ownable, VRFConsumerBase {
     Counters.Counter private _tokenIds;
 
     uint256 private constant MAX_SUPPLY = 145;
-    uint256 private constant UNIT_PRICE = 4 ether;
+    uint256 private constant UNIT_PRICE = 0.01 ether;
     mapping(uint256 => uint256) private m;
     mapping(address => bool) private isMinting;
     mapping(bytes32 => address) private requesters;
@@ -26,11 +26,14 @@ contract CryptoneX11 is ERC721URIStorage, Ownable, VRFConsumerBase {
     constructor()
         ERC721("Cryptone X11", "CX11")
         VRFConsumerBase(
-            0x3d2341ADb2D31f1c5530cDC622016af293177AE0, // VRF Coordinator
-            0xb0897686c545045aFc77CF20eC7A532E3120E0F1 // LINK Token
+            //0x3d2341ADb2D31f1c5530cDC622016af293177AE0, // VRF Coordinator
+            0x8C7382F9D8f56b33781fE506E897a4F1e2d17255,
+            0x326C977E6efc84E512bB9C30f76E30c160eD06FB
+            //0xb0897686c545045aFc77CF20eC7A532E3120E0F1 // LINK Token
         )
     {
-        keyHash = 0xf86195cf7690c55907b2b611ebb7343a6f649bff128701cc542f0569e2c549da;
+        // keyHash = 0xf86195cf7690c55907b2b611ebb7343a6f649bff128701cc542f0569e2c549da;
+        keyHash = 0x6e75b569a01ef56d18cab6a8e71e6600d6ce853834d4a5748b720d06f878b3a4;
         fee = 0.0001 * 10**18;
     }
 
