@@ -11,7 +11,7 @@ contract CryptoneX11 is ERC721URIStorage, Ownable, VRFConsumerBase {
     Counters.Counter private _tokenIds;
 
     uint256 private constant MAX_SUPPLY = 145;
-    uint256 private constant UNIT_PRICE = 0.01 ether;
+    uint256 private constant UNIT_PRICE = 4 ether;
     mapping(uint256 => uint256) private m;
     mapping(address => bool) private isMinting;
     mapping(bytes32 => address) private requesters;
