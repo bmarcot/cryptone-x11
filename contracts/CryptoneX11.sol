@@ -20,6 +20,9 @@ contract CryptoneX11 is ERC721URIStorage, Ownable, VRFConsumerBase {
     bytes32 internal keyHash;
     uint256 internal fee;
 
+    event RequestedRandomness(bytes32 requestId, address from);
+    event FulfilledRandomness(bytes32 requestId);
+
     constructor()
         ERC721("CryptoneX11", "CX11")
         VRFConsumerBase(
@@ -51,6 +54,7 @@ contract CryptoneX11 is ERC721URIStorage, Ownable, VRFConsumerBase {
         require(isMinting[msg.sender] == false, "!minting");
         isMinting[msg.sender] == true;
         bytes32 requestId = requestRandomness(keyHash, fee);
+        emit RequestedRandomness(requestId, msg.sender);
         requesters[requestId] = to;
     }
 
@@ -58,6 +62,7 @@ contract CryptoneX11 is ERC721URIStorage, Ownable, VRFConsumerBase {
         internal
         override
     {
+        emit FulfilledRandomness(requestId);
         uint256 newItemId = shuffle(randomness);
         _safeMint(requesters[requestId], newItemId);
         _tokenIds.increment();
